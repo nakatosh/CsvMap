@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<title>CVtoMAP</title>
+<!--スマビュー-->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="easy-button.css"/>
+<link rel="stylesheet" href="T.css"/>
+
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+
+<script type="text/javascript" src="t.js"></script>
+<script type="text/javascript" src="easy-button.js"></script>
+
+</head>
+<body>
+<div id="map"></div>
+<td><input type="hidden" id="LAT" name="LAT"></td>
+<td><input type="hidden" id="LNG" name="LNG"></td>
+<td><input type="hidden" id="GLAT" name="GLAT"></td>
+<td><input type="hidden" id="GLNG" name="GLNG"></td>
+<td><input type="hidden" id="setti1"  name="setti1" placeholder="接地抵抗"/></td>
+<td><input type="hidden" id="noww" name="now"></td>
+
+<input type="checkbox" id="pop-up">
+ <div class="overlay">
+  <div class="window">
+  <label class="close" for="pop-up">×</label>  	
+   <p class="text">
+
+     <table> 
+       <tr>
+       <td> <label>主キー</label></td>
+        </tr>
+      <tr><td><input type="number"  id="POLNO" name="POLNO"  class="t1" placeholder="キー" disabled></td>
+      <td><input type="button" value="経路表示" onclick="gmap()"/></td></tr>
+
+      <tr><td><label>メモ</label></td></tr>
+      <tr><td><input  id="biko" name="biko"  cols="30" rows="4" placeholder="メモ" class="t1"></td></tr>
+      
+      
+      
+      <td><label>作業完了</label></td>
+      <tr>
+      <td><input type="button" value="   完　了   " onclick="setValue()"></td>
+   　 <td><input type="button" value=" キャンセル " onclick="notValue()"></td>
+      </tr>
+</table>
+    </p>
+  </div>
+ </div>
+<script>
+
+//地図を描く
+var gsiattr = "<a href='https://portal.cyberjapan.jp/help/termsofuse.html' target='_blank'>地理院タイル</a>";
+var gsi = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', { attribution: gsiattr ,maxZoom: 20,maxNativeZoom: 18});
+var gsip = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', { attribution: gsiattr ,maxZoom: 20,maxNativeZoom: 18});
+var gsipale = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', { attribution: gsiattr ,maxZoom: 20,maxNativeZoom: 18});
+var osm = L.tileLayer('https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png', {
+    attribution: "Maptiles by <a href='https://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='https://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL.",
+    maxZoom: 20,
+    maxNativeZoom: 18
+});
+//
+var DKS = { color:'red', weight: 5 }
+var BKS = { color:'blue', weight: 5 }
+var MI = L.featureGroup();
+var KAN = L.featureGroup();
+var myIcon1 = L.divIcon({ className:'icon1'});
+var myIcon2 = L.divIcon({ className:'icon2'}); 
+var myIcon3 = L.divIcon({ className:'icon3'}); 
+var map = L.map('map', {center: [42.9577763,141.353986],zoom: 17,layers: [gsipale, MI, KAN]});
+var baseLayers = {"地理院地図": gsi,"淡色地図": gsipale,"航空写真": gsip,"オープンストリートマップ": osm};
+var overlays = { "完了":KAN,"未完":MI};
+
+L.control.layers(baseLayers, overlays).addTo(map);
+
+//スケール設定
+L.control.scale({
+        imperial: false,
+        maxWidth: 300,
+}).addTo(map);
+
+// 現在地表示ボタン
+var watch_id = 0;
+var curMarker = null;	// 現在地マーカー
+var currentWatchBtn = null;
+
+L.easyButton('fa fa-user', function(btn, easyMap) {
+currentWatchReset();
+currentWatch();
+}).addTo(map);
+
+L.easyButton('<strong>未</strong>', function(btn, easyMap) {
+currentWatchReset();
+if (currentWatchBtn) {
+currentWatchBtn.state('current-watch');
+currentWatchBtn = null;
+}
+mikan(); 
+}).addTo(map);
+
+L.easyButton('<strong>完</strong>', function(btn, easyMap) {
+currentWatchReset();
+if (currentWatchBtn) {
+currentWatchBtn.state('current-watch');
+currentWatchBtn = null;
+}
+kanryo(); 
+}).addTo(map);
+
+L.easyButton('fa fa-reply-all', function(btn, easyMap) {
+history.go(-1);
+}).addTo(map);
+
+//起動時スクリプト
+window.addEventListener("load", function() {
+mikan();
+});
+</script>
+
+</body>
+</html>
