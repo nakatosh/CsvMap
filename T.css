@@ -1,26 +1,41 @@
 .BT{
-    display: block;
-    width: 80%;
-    border: 0.3px solid #999;
-    box-sizing: border-box;
-    font-size: 16px;
-}
+	display: inline-block;
+	   width: 90%;
+	   padding: 8px 12px;
+	   border-radius: 5px;
+	   cursor: pointer;
+	   text-align:center;
+	   color: #ffffff;
+	   background: #20303a;
+	   user-select: none;
+	   font-size: 20px;
+   }
+
+
 .BTYES{
-    display: block;
-    width: 80%;
-    border: 0.3px solid rgb(7, 7, 7);
-	background-color: rgb(128, 128, 136);
-    box-sizing: border-box;
-    font-size: 16px;
-}
+	display: inline-block;
+	   width: 90%;
+	   padding: 8px 12px;
+	   border-radius: 5px;
+	   cursor: pointer;
+	   text-align:center;
+	   color: #ffffff;
+	   background: rgb(128, 128, 136);
+	   user-select: none;
+	   font-size: 20px;
+   }
 .BTNO{
-    display: block;
-    width: 80%;
-    border: 0.3px solid rgb(5, 5, 5);
-	background-color: rgb(255, 25, 147);
-    box-sizing: border-box;
-    font-size: 16px;
-}
+	display: inline-block;
+	   width: 90%;
+	   padding: 8px 12px;
+	   border-radius: 5px;
+	   cursor: pointer;
+	   text-align:center;
+	   color: #ffffff;
+	   background: rgb(255, 25, 147);
+	   user-select: none;
+	   font-size: 20px;
+   }
 .t1{
     display: block;
     width: 80%;
