@@ -39,19 +39,16 @@
        <tr>
        <td> <label>主キー</label></td>
         </tr>
-      <tr><td><input type="number"  id="POLNO" name="POLNO"  class="t1" placeholder="キー" disabled></td>
-      <td><input type="button" value="経路表示" onclick="gmap()"/></td></tr>
+      <tr><td><input type="number"  id="POLNO" name="POLNO"  class="t1" placeholder="キー" disabled></td></tr>
+      <tr><td><input type="button" value="経路表示"  class="BT" onclick="gmap()"/></td></tr>
 
       <tr><td><label>メモ</label></td></tr>
-      <tr><td><input  id="biko" name="biko"  cols="30" rows="4" placeholder="メモ" class="t1"></td></tr>
+      <tr><td><input  id="biko" name="biko"  cols="40" rows="4" placeholder="メモ" class="t1"></td></tr>
       
-      
-      
-      <td><label>作業完了</label></td>
-      <tr>
-      <td><input type="button" value="   完　了   " onclick="setValue()"></td>
-   　 <td><input type="button" value=" キャンセル " onclick="notValue()"></td>
-      </tr>
+      <td><label>作業完了（灰色）にします。</label></td>
+      <tr><td><input type="button" value="   完　了   " class="BTYES" onclick="setValue()"></td></tr>
+      <td><label>作業前（ピンク色）にします。</label></td>
+      <tr><td><input type="button" value=" キャンセル " class="BTNO" onclick="notValue()"></td></tr>
 </table>
     </p>
   </div>
