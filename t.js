@@ -1,37 +1,26 @@
 
 
-//グーグルマップを開く
-function gmap() {
-if (document.getElementById("POLNO").value>0){} else {alert('マーカーを選択してから押すと、グーグルマップで現在地からの経路が表示されます。');return;}
-var glat = document.getElementById("LAT").value;
-  var glng = document.getElementById("LNG").value;
-
-window.open("https://www.google.com/maps?q=" + glat + "," + glng);
-}
-
 var db;
-   var indexedDB = window.indexedDB || window.mozIndexedDB || window.msIndexedDB;
-      if (indexedDB) {
-      // データベースを削除したい場合はコメントを外します。
-      //indexedDB.deleteDatabase("mydb");
-      var openRequest = indexedDB.open("mydb", 1.0);
-       openRequest.onupgradeneeded = function(event) {
-// データベースのバージョンに変更があった場合(初めての場合もここを通ります。)
+var indexedDB = window.indexedDB || window.mozIndexedDB || window.msIndexedDB;
+    
+    if (indexedDB) {
+        // データベースを削除したい場合はコメントを外します。
+        //indexedDB.deleteDatabase("mydb");
+        var openRequest = indexedDB.open("CSVMAPdb", 1.0);
+        openRequest.onupgradeneeded = function(event) {
+        // データベースのバージョンに変更があった場合(初めての場合もここを通ります。)
         db = event.target.result;
-           var store = db.createObjectStore("mystore", { keyPath: "mykey"});
-              store.createIndex("myvalueIndex", "myvalue");
-
-      }
-          openRequest.onsuccess = function(event) {
-
+        var store = db.createObjectStore("mystore", { keyPath: "mykey"});
+            store.createIndex("myvalueIndex", "myvalue");
+            }                
+            openRequest.onsuccess = function(event) {
+            db = event.target.result;
+        }
+        } else {
+        window.alert("このブラウザではIndexed DataBase API は使えません。");
+        }
 
 //マーカークリックイベント
-         db = event.target.result;
-        }
-      } else {
-        window.alert("このブラウザではIndexed DataBase API は使えません。");
-              }
-
 function markerClick(e){ 
   ck();
   //マーカーから値をもらう
@@ -55,7 +44,7 @@ function markerClick(e){
 // 接地抵抗が入力済みなら取得する
  function getValue(event) {
   var key = document.getElementById("POLNO").value;
-  var result = document.getElementById("result");             
+  //var result = document.getElementById("result");             
   var transaction = db.transaction(["mystore"], "readwrite");
   var store = transaction.objectStore("mystore");                  
   var request = store.get(key);
@@ -139,7 +128,7 @@ function notValue(event) {
 // LDBからマーカ
 function MAKall(event) {
 return new Promise(function(resolve) {
-  var result = document.getElementById("result");                   
+  //var result = document.getElementById("result");                   
   var transaction = db.transaction(["mystore"], "readwrite");
   var store = transaction.objectStore("mystore");
   var request = store.openCursor();
@@ -276,6 +265,13 @@ function ima() {
   noww.value =  year + "/" + month + "/" + date + " " + hour + ":" + minute + ":" + second;
 }
 
-
+//グーグルマップを開く
+function gmap() {
+  if (document.getElementById("POLNO").value>0){} else {alert('マーカーを選択してから押すと、グーグルマップで現在地からの経路が表示されます。');return;}
+  var glat = document.getElementById("LAT").value;
+    var glng = document.getElementById("LNG").value;
+  
+  window.open("https://www.google.com/maps?q=" + glat + "," + glng);
+  }
 
 

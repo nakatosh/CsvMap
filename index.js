@@ -6,7 +6,7 @@ var indexedDB = window.indexedDB || window.mozIndexedDB || window.msIndexedDB;
     if (indexedDB) {
         // データベースを削除したい場合はコメントを外します。
         //indexedDB.deleteDatabase("mydb");
-        var openRequest = indexedDB.open("mydb", 1.0);
+        var openRequest = indexedDB.open("CSVMAPdb", 1.0);
         openRequest.onupgradeneeded = function(event) {
         // データベースのバージョンに変更があった場合(初めての場合もここを通ります。)
         db = event.target.result;
