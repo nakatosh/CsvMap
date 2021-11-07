@@ -47,10 +47,10 @@ function getAll(event) {
         var data = cursor.value;
         
         //測定値が入っているものだけ表示
-        if(data.myvalue >0) {
+        //if(data.myvalue >0) {
           //result.innerHTML += cursor.key +  "," + data.myvalue + "," + data.myLAT + "," + data.myLNG  + "," + data.mytuti + "," + data.mybiko + "\n";
          bbb += cursor.key +  "," + data.myvalue + "," + data.myLAT + "," + data.myLNG + "," + data.mytuti + "," + data.mybiko+ "," + data.myetc + "," + data.myGLAT + "," + data.myGLNG + "," + data.mynow + "\n";
-        }
+        //}
      cursor.continue();
     }
     })
@@ -84,13 +84,14 @@ var rq = st.count();
 async function dCSV(){
 await getAll(event);
 await downloadCSV(bbb);
+await getCount()
 }
 
 // CSV出力
 function downloadCSV(bbb) {
 	return new Promise(function(resolve) {
     //ダウンロードするCSVファイル名を指定する
-    var filename = "download.csv";
+    var filename = "csvmap.csv";
     //CSVデータ
     var data =  "電柱NO,接地測定値,緯度,経度,舗装,メモ,メモ2,測定緯度,測定経度,測定日時" + "\n" + bbb
     //BOMを付与する（Excelでの文字化け対策）
