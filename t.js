@@ -149,7 +149,7 @@ return new Promise(function(resolve) {
 
     var divIcon3 = L.divIcon({
       html: data.mykey,
-      className: 'divicon3',
+      //className: 'divicon3',
       iconSize: [0,0],
       iconAnchor: [-15,15]
     });
@@ -161,21 +161,22 @@ return new Promise(function(resolve) {
       .on('click', function(e) { markerClick(e);})
     );
     moji.addLayer(
-      L.marker([data.myLAT, data.myLNG0], {icon: divIcon3})
+      L.marker([data.myLAT, data.myLNG], {icon: divIcon3})
     );
+
     } else {
+
       MI.addLayer(
-      L.marker([data.myLAT, data.myLNG],{icon:myIcon1,customID: data.mykey})
-      .on('click', function(e) { markerClick(e);})
+        L.marker([data.myLAT, data.myLNG],{icon:myIcon1,customID: data.mykey})
+        .on('click', function(e) { markerClick(e);})
       );
       moji.addLayer(
         L.marker([data.myLAT, data.myLNG], {icon: divIcon3})
       );
-
     }
     cursor.continue();
-      }
-      })
+  }
+})
 }
 
 
