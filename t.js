@@ -136,6 +136,7 @@ return new Promise(function(resolve) {
   //マーカーレイヤー削除
   MI.clearLayers();
   KAN.clearLayers();
+  moji.clearLayers();
 
   request.onsuccess = function (event) {
     //リストがなかったら終了  
