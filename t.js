@@ -145,21 +145,32 @@ return new Promise(function(resolve) {
      }
     var cursor = event.target.result;
     var data = cursor.value;
-  
+
+    var divIcon3 = L.divIcon({
+      html: data.mykey,
+      className: 'divicon3',
+      iconSize: [0,0],
+      iconAnchor: [-15,15]
+    });
     //値が入ってたら完了（グレー）、未入力ピンク
     if(data.myvalue>0){
     //L.marker([data.myLAT, data.myLNG],{icon:myIcon2,customID: data.mykey}).addTo(KAN).on('click', function(e) { markerClick(e);});
     KAN.addLayer(
       L.marker([data.myLAT, data.myLNG],{icon:myIcon2,customID: data.mykey})
-     .bindPopup(data.mykey)
       .on('click', function(e) { markerClick(e);})
+    );
+    moji.addLayer(
+      L.marker([data.myLAT, data.myLNG0], {icon: divIcon3})
     );
     } else {
       MI.addLayer(
       L.marker([data.myLAT, data.myLNG],{icon:myIcon1,customID: data.mykey})
-      .bindPopup(data.mykey)
       .on('click', function(e) { markerClick(e);})
       );
+      moji.addLayer(
+        L.marker([data.myLAT, data.myLNG], {icon: divIcon3})
+      );
+
     }
     cursor.continue();
       }
