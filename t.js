@@ -148,7 +148,7 @@ return new Promise(function(resolve) {
     var data = cursor.value;
 
     var divIcon3 = L.divIcon({
-      html: data.mykey,
+      html: data.mykey.slice( -6 ),
       //className: 'divicon3',
       iconSize: [0,0],
       iconAnchor: [-15,15]
