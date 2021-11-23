@@ -122,6 +122,15 @@ window.location.href = './index.html'; // 通常の遷移
 window.addEventListener("load", function() {
 mikan();
 });
+
+    //ズームイベント
+    map.on('zoom', function(e) {
+      if (map.getZoom() >17){ //8越え(詳細)ならアイコン表示　小
+        map.addLayer(moji);
+      } else {                  //9以下(広域)ならメッセージ表示 大
+        map.removeLayer(moji);
+      }
+    });
 </script>
 
 </body>
