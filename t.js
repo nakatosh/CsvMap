@@ -149,7 +149,7 @@ return new Promise(function(resolve) {
 
     var divIcon3 = L.divIcon({
       html: data.mykey.slice( -6 ),
-      //className: 'divicon3',
+      className: 'divicon2',
       iconSize: [0,0],
       iconAnchor: [-15,15]
     });
