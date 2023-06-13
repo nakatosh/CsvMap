@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JS QR Code Reader</title>
+    <meta name="description" content="QR Code Reader" />
+    <script src="./jsQR.js"></script>
+<script type="text/javascript" src="index.js"></script>
+<link rel="stylesheet" href="index.css"/>
+
+
+  </head>
+  <body>
+<div>
+  <br><label class="BT" onclick="location.href='./index.html'" >戻る</label><br>
+
+  ＱＲコードを読み取ってください<br>
+
+    <div id="result" style="min-height: 20px;"></div>
+</div>
+
+    <div>
+      <div style="position:relative;">
+        <video style="position: absolute; z-index: -100;"></video>
+        <div id="overlay" style="position: absolute; border: 1px solid #F00;"></div>
+      </div>      
+    </div>
+
+
+<textarea  id="ttt" class="txt"  cols="40" rows="8" placeholder="キー番号,緯度,経度,を入力してください。"></textarea ><br>
+
+    <script>
+      const constraints = { 
+        audio: false, 
+        video: {
+          facingMode: 'environment', 
+          width: 500, 
+          height: 500, 
+      }};
+
+      const drawRect = (topLeft, bottomRight) => {
+        const { x: x1, y: y1 } = topLeft;
+        const { x: x2, y: y2 }= bottomRight;
+
+        const overlay = document.querySelector('#overlay');
+        overlay.style.left = `${x1}px`;
+        overlay.style.top =`${y1}px`;
+        overlay.style.width = `${x2 - x1}px`;
+        overlay.style.height =`${y2 - y1}px`;
+      };
+
+      (async() => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          const video = document.querySelector('video');
+          video.srcObject = stream;
+          video.play();
+
+          const { width, height } = constraints.video;
+          const canvas = new OffscreenCanvas(width, height);
+          const context = canvas.getContext('2d');
+
+          const timer = setInterval(() => {
+              context.drawImage(video, 0, 0, width, height);
+              const imageData = context.getImageData(0, 0, width, height);
+              const code = jsQR(imageData.data, imageData.width, imageData.height);
+              if (code) {
+		//QR取れた
+                document.querySelector('#result').textContent = code.data;
+                drawRect(code.location.topLeftCorner, code.location.bottomRightCorner);  
+                document.getElementById("ttt").value =code.data;
+  //再マーク
+   txtinp();              
+              } else {
+		//QR取れない
+                document.querySelector('#result').textContent = '';
+              }
+            }, 300);
+        } catch(error) {
+          console.log('load error', error);
+        }
+      })();
+
+    </script>
+  </body>
+</html>
