@@ -14,30 +14,43 @@
   </head>
   <body>
 <div>
-  <br><label class="BT" onclick="location.href='./index.html'" >戻る</label><br>
 
-  ＱＲコードを読み取ってください<br>
 
+  <br>ＱＲコードを読み取ってください<br>
+
+  <br><label class="BT" onclick="location.href='./index.html'" >戻る</label><br><br>
+
+<textarea  id="ttt" class="txt"  cols="40" rows="10" placeholder="QRデータが表示されます"></textarea ><br>
+
+</div>
+
+<div>
     <div id="result" style="min-height: 20px;"></div>
 </div>
 
     <div>
       <div style="position:relative;">
-        <video style="position: absolute; z-index: -100;"></video>
+        <video style="
+		position: absolute;
+		z-index: -100;width:95%;"
+	>
+	</video>
         <div id="overlay" style="position: absolute; border: 1px solid #F00;"></div>
       </div>      
     </div>
 
 
-<textarea  id="ttt" class="txt"  cols="40" rows="8" placeholder="キー番号,緯度,経度,を入力してください。"></textarea ><br>
+
 
     <script>
       const constraints = { 
-        audio: false, 
+        audio: false,
+
         video: {
-          facingMode: 'environment', 
-          width: 500, 
-          height: 500, 
+          facingMode: 'environment',
+		width:500,
+		height:500
+
       }};
 
       const drawRect = (topLeft, bottomRight) => {
@@ -69,10 +82,11 @@
               if (code) {
 		//QR取れた
                 document.querySelector('#result').textContent = code.data;
-                drawRect(code.location.topLeftCorner, code.location.bottomRightCorner);  
+                drawRect(code.location.topLeftCorner, code.location.bottomRightCorner);
+ 		//再マーク
                 document.getElementById("ttt").value =code.data;
-  //再マーク
-   txtinp();              
+		//再マーク
+		txtinp();              
               } else {
 		//QR取れない
                 document.querySelector('#result').textContent = '';
@@ -85,4 +99,6 @@
 
     </script>
   </body>
+</html>
+
 </html>
