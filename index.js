@@ -148,7 +148,7 @@ var cols = col.split(LF);
             for (var i = 0; i < cols.length; i++) {
     
               var data = cols[i].split(',');          
-                setValue(data[0].replace(/-/g, ''),0,data[1],data[2],1,data[3]);
+                setValue(data[0],0,data[1],data[2],1,data[3]);
             }
 result.innerHTML = '入力したデータを取り込みました'; 
 }
@@ -175,7 +175,7 @@ if(window.File && window.FileReader && window.FileList && window.Blob) {
 		
             for (var i = 0; i < cols.length; i++) {
               var data = cols[i].split(',');
-                setValue(data[0].replace(/-/g, ''),data[1],data[2],data[3],data[4],data[5]);
+                setValue(data[0],data[1],data[2],data[3],data[4],data[5]);
             }
 	file.value = '';
 	result.innerHTML = 'CSVを取り込みました';    	
@@ -191,4 +191,3 @@ if(window.File && window.FileReader && window.FileList && window.Blob) {
     file.style.display = 'none';
     result.innerHTML = 'File APIに対応したブラウザでご確認ください';
 }
-
