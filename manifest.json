@@ -28,7 +28,7 @@
       "type": "image/png"
     }
   ],
-  "id": "unique-app-id",
+  "id": "CsvMap",
   "description": "CSVファイル（主キー、緯度、経度）を読み込んで地図上に描画する",
   "dir": "auto",
   "lang": "ja",
