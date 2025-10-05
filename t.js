@@ -248,7 +248,7 @@ var kno =document.getElementById("PullDownList").value
               .on('click', function(e) { markerClick(e); })
           );
           moji.addLayer(
-            L.marker([data.mv_2, data.mv_3], {icon: divIcon3})
+            L.marker([data.mv_2, data.mv_3], {icon: divIcon3}).on('click', function(e) { markerClick(e); })
           );
 	} else {}
 
@@ -259,8 +259,9 @@ var kno =document.getElementById("PullDownList").value
               .on('click', function(e) { markerClick(e); })
           );
           moji.addLayer(
-            L.marker([data.mv_2, data.mv_3], {icon: divIcon3})
+            L.marker([data.mv_2, data.mv_3], {icon: divIcon3}).on('click', function(e) { markerClick(e); })
           );
+
   
 }
 }
