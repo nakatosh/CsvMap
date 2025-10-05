@@ -23,7 +23,7 @@
 <div id="map"></div>
 
 <div class="box2">
-<label>グループ　フィルタ</label>
+<label>グループ</label>
 	<select id="PullDownList" onchange="inputChange()"></select>
          <input type="button" value="解除" onclick="KAIJYO()"/> 
 </div>
@@ -87,9 +87,9 @@
         <td colspan="1" >
             <input type="number" id="suryo" value="1" min="1" max="100" step="1" class="biko">
         </td>
-        <td colspan="1"><input type="button" value="0" class="BT" onclick="setValue10()"></td>
-        <td colspan="1"><input type="button" value="+5" class="BT" onclick="setValue20()"></td>
-        <td colspan="1"><input type="button" value="+10" class="BT" onclick="setValue30()"></td>
+        <td colspan="1"><input type="button" value="0" class="BT" onclick="suu0()"></td>
+        <td colspan="1"><input type="button" value="+5" class="BT" onclick="suuPlus(5)"></td>
+        <td colspan="1"><input type="button" value="+10" class="BT" onclick="suuPlus(10)"></td>
       </tr>
       <tr>
         <th>メモ</th>

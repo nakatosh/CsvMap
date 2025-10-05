@@ -47,7 +47,7 @@ function getAll(_event) {
         var data = cursor.value;
         
         //測定値が入っているものだけ表示
-        if(data.mv_5 >1) {
+        if(data.mv_5 ===1) {
           //result.innerHTML += cursor.key +  "," + data.myvalue + "," + data.myLAT + "," + data.myLNG  + "," + data.mytuti + "," + data.mybiko + "\n";
          bbb += cursor.key +  ","
           + data.mv_1 + "," 

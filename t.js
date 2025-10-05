@@ -30,12 +30,6 @@ function markerClick(e){
   ima();
   map.setView([e.latlng.lat, e.latlng.lng]);
 
-  //現在地取得
-  GPS(); 
-  //完了FLG クリア 
- // kflg.value = "";
-  //接地抵抗に移動
-  document.getElementById('kflg').focus()
   //DBから値をもらう
   getValue(); 
 
@@ -43,48 +37,44 @@ function markerClick(e){
 
 // 接地抵抗が入力済みなら取得する
  function getValue() {
-  var key = document.getElementById("NO").value;
-  //var result = document.getElementById("result");             
+  var key =  Number(document.getElementById("NO").value);   
   var transaction = db.transaction(["mystore"], "readwrite");
   var store = transaction.objectStore("mystore");                  
   var request = store.get(key);
 
-  request.onsuccess = function (event) {  
-
-    if (event.target.result === undefined) {} else {
-      //値あり
-
-    var result = event.target.result;
-    GCD.value   = result.mv_1;
-    biko.value  = result.mv_4;
-    kflg.value  = result.mv_5;
-    rank.value  = result.mv_6;
-    setub.value = result.mv_7;
-    suryo.value = result.mv_8;
-    noww.value  = result.mv_10;
-    }
+request.onsuccess = function (event) {
+  var result = event.target.result;
+  if (result) {
+    document.getElementById("GCD").value   = result.mv_1 || "";
+    document.getElementById("biko").value  = result.mv_4 || "";
+    document.getElementById("kflg").value  = result.mv_5 || "";
+    document.getElementById("rank").value  = result.mv_6 || "";
+    document.getElementById("setub").value = result.mv_7 || "";
+    document.getElementById("suryo").value = result.mv_8 || "";
+    document.getElementById("noww").value  = result.mv_10 || "";
+  } else {
+    console.log("データが見つかりませんでした");
   }
+};
 }
 
 
-function setValue10() {
+function suu0() {
   document.getElementById("suryo").value = 0;
 }
-function setValue20() {
-  document.getElementById("suryo").value =document.getElementById("suryo").value +++ 5;
+function suuPlus(value) {
+  document.getElementById("suryo").value =document.getElementById("suryo").value +++ value;
 }
-function setValue30() {
-  document.getElementById("suryo").value =document.getElementById("suryo").value +++ 10;
-}
+
 
 
 //登録  
 function setValue() {
-  const g = id => document.getElementById(id), key = g("NO").value;
+  const g = id => document.getElementById(id), key = +g("NO").value;
   if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
   const data = {
     mykey: key, 
-    mv_1: g("GCD").value,
+    mv_1: +g("GCD").value,
     mv_2: +g("LAT").value, 
     mv_3: +g("LNG").value,
     mv_4: g("biko").value, 
@@ -98,10 +88,13 @@ function setValue() {
  //db登録
   db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
     console.log("保存成功:", key);
+
+
+  MAK(1);
  //入力欄リセット
   ["NO","GCD", "kflg", "biko", "rank", "setub", "suryo"].forEach(id => g(id).value = "");
 //再マーク
-  MAKall(); 
+
   ck0();
 
   // 保存成功時の処理（必要なら追加）
@@ -113,11 +106,11 @@ function setValue() {
 
 //キャンセル
 function notValue() {
-   const g = id => document.getElementById(id), key = g("NO").value;
+   const g = id => document.getElementById(id), key = +g("NO").value;
   if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
   const data = {
     mykey: key, 
-    mv_1: g("GCD").value,
+    mv_1: +g("GCD").value,
     mv_2: +g("LAT").value, 
     mv_3: +g("LNG").value,
     mv_4: g("biko").value, 
@@ -132,16 +125,65 @@ function notValue() {
  //db登録
   db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
     console.log("保存成功:", key);
+
+
+  MAK(data.mv_5);
  //入力欄リセット
   ["NO","GCD", "kflg", "biko", "rank", "setub", "suryo"].forEach(id => g(id).value = "");
 //再マーク
-  MAKall(); 
+
   ck0();
 
   // 保存成功時の処理（必要なら追加）
   request.onsuccess = function () {
     console.log("データの保存に成功しました:", key);
   };
+}
+
+
+// LDBからマーカ
+function MAK(flg) {
+  var key = document.getElementById("NO").value;
+
+  var LAT = Number(document.getElementById("LAT").value);
+  var LNG = Number(document.getElementById("LNG").value);
+
+KAN.eachLayer((layer)=> {if (key === layer.options.customID) {KAN.removeLayer(layer);}});
+MI.eachLayer((layer)=> {if (key === layer.options.customID) {MI.removeLayer(layer);}});
+ho.eachLayer((layer)=> {if (key === layer.options.customID) {ho.removeLayer(layer);}});
+
+    switch (flg) {
+      case 1:
+        createMarker(KAN, LAT, LNG, '#fb1bceff', key);
+        break;
+      case 0:
+        createMarker(MI, LAT, LNG, '#30242fff', key);
+        break;
+      case 3:
+          createMarker(ho, LAT, LNG, '#047104ff', key);
+        break;
+      case 4:
+          createMarker(ho, LAT, LNG, '#14a9ceff', key);
+        break;
+      default:
+        createMarker(MI, LAT, LNG, '#4f484eff', key);
+        break;
+    }
+
+          
+}
+
+function createMarker(layer, lat, lng, color, key) {
+  layer.addLayer(
+    L.circleMarker([lat, lng], {
+      color: '#fdfdfd',
+      weight: 1,
+      fillColor: color,
+      fillOpacity: 1,
+      radius: 8,
+      customID: key
+    }).on('click', function(e) { markerClick(e); })
+  );
 }
 // LDBからマーカ
 function MAKall() {
