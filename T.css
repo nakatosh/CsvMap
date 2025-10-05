@@ -105,22 +105,19 @@ padding: 0; margin: 0
 	left: 0;
 	font-size: 16px;
 }
+
 .window {
 	width: 90vw;
-	max-width: 400px;
-	height: 400px;
-	background-color: #fffdfd;
+	height: 80vh;
+	background-color: #f1e7e7;
 	border-radius: 10px;
-    display: flex;
-	justify-content: center;
-	align-items: center;
 	position: fixed;
+	top: 10%;
+	left: 5%;
+	font-size: 14px;
+}`
 
-	top:25%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: 16px;
-}
+
 .text {
 	font-size: 16px;
 	margin: 0;
