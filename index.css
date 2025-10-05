@@ -1,19 +1,34 @@
+/* >csvファイル選択 */
+.file-btn {
+    display: inline-block;
+    width: 95%;
+    padding: 8px 12px;
+    border-radius: 5px;
+    color: #ffffff;
+    background: #b05c01;
+    cursor: pointer;
+    text-align:center;
+}
+.file-btn input {
+    display: none;
+}
 
+/* >他のボタン */
 .BT{
  display: inline-block;
-    width: 90%;
+    width: 95%;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
     text-align:center;
     color: #ffffff;
-    background: #20303a;
-　　　user-select: none;
+    background: #b05c01;
+    user-select: none;
 }
 
 .txt{
  display: inline-block;
-    width: 90%;
+    width: 95%;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
@@ -30,16 +45,13 @@ html {
     margin: 1;
 } 
 
-.file-btn {
-    display: inline-block;
-    width: 90%;
-    padding: 8px 12px;
-    border-radius: 5px;
-    color: #ffffff;
-    background: #20303a;
-    cursor: pointer;
-    text-align:center;
+h1 {
+    width: 95%;
+color: #b05c01;
+ text-align:center;
+} 
+
+body{
+  font-family:'メイリオ', 'Meiryo', sans-serif;
 }
-.file-btn input {
-    display: none;
-}
+

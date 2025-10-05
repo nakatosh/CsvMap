@@ -24,26 +24,26 @@ var indexedDB = window.indexedDB || window.mozIndexedDB || window.msIndexedDB;
 function markerClick(e){ 
   ck();
   //マーカーから値をもらう
-  POLNO.value = e.sourceTarget.options.customID;            
+  NO.value = e.sourceTarget.options.customID;            
   LAT.value = e.latlng.lat;
   LNG.value = e.latlng.lng;
   ima();
   map.setView([e.latlng.lat, e.latlng.lng]);
 
   //現在地取得
-　GPS(); 
-  //接地抵抗クリア 
-  setti1.value = "";
+  GPS(); 
+  //完了FLG クリア 
+ // kflg.value = "";
   //接地抵抗に移動
-  document.getElementById('setti1').focus()
+  document.getElementById('kflg').focus()
   //DBから値をもらう
-  getValue(event); 
+  getValue(); 
 
 }
 
 // 接地抵抗が入力済みなら取得する
- function getValue(event) {
-  var key = document.getElementById("POLNO").value;
+ function getValue() {
+  var key = document.getElementById("NO").value;
   //var result = document.getElementById("result");             
   var transaction = db.transaction(["mystore"], "readwrite");
   var store = transaction.objectStore("mystore");                  
@@ -53,91 +53,183 @@ function markerClick(e){
 
     if (event.target.result === undefined) {} else {
       //値あり
-      var aaa = Number(event.target.result.myvalue)
-      //0だったらヌル数字だったら数字
-      if(aaa===0){setti1.value ="";} else {
-      setti1.value = aaa;
-      biko.value = event.target.result.mybiko
-     
 
-      }
+    var result = event.target.result;
+    GCD.value   = result.mv_1;
+    biko.value  = result.mv_4;
+    kflg.value  = result.mv_5;
+    rank.value  = result.mv_6;
+    setub.value = result.mv_7;
+    suryo.value = result.mv_8;
+    noww.value  = result.mv_10;
     }
   }
 }
 
-//登録  
-function setValue(event) {
-  var key = document.getElementById("POLNO").value;
-  var value = Number(1);
-  var LAT = Number(document.getElementById("LAT").value);
-  var LNG = Number(document.getElementById("LNG").value);
-  var GLAT = Number(document.getElementById("GLAT").value);
-  var GLNG = Number(document.getElementById("GLNG").value);
-  var now = document.getElementById("noww").value;
-  //チェック
-  if (key >0){} else {alert('マーカーをクリックしてから登録してください!!');return;}
-  var biko = document.getElementById("biko").value;
-  //                  
-  var transaction = db.transaction(["mystore"], "readwrite");
-  var store = transaction.objectStore("mystore")
-  var request = store.put({ mykey: key, myvalue: value, myLAT: LAT, myLNG: LNG, mybiko: biko, myGLAT: GLAT, myGLNG: GLNG, mynow: now });
-  
-  //入力欄リセット
-	document.getElementById("POLNO").value = "";
-	document.getElementById("setti1").value = "";
-	document.getElementById("biko").value = "";
 
-  //再マーク
-   MAKall();
-  ck0();
-
-   request.onsuccess = function (event) {
-
-   }
+function setValue10() {
+  document.getElementById("suryo").value = 0;
 }
-//キャンセル
-function notValue(event) {
-  var key = document.getElementById("POLNO").value;
-  var value = Number(0);
-  var LAT = Number(document.getElementById("LAT").value);
-  var LNG = Number(document.getElementById("LNG").value);
-  var GLAT = Number(0);
-  var GLNG = Number(0);
-  var now = Number(0);
-  //チェック
-  if (key >0){} else {alert('マーカーをクリックしてから登録してください!!');return;}
-  var biko = document.getElementById("biko").value;
-  //                  
-  var transaction = db.transaction(["mystore"], "readwrite");
-  var store = transaction.objectStore("mystore")
-  var request = store.put({ mykey: key, myvalue: value, myLAT: LAT, myLNG: LNG, mybiko: biko, myGLAT: GLAT, myGLNG: GLNG, mynow: now });
-  
-  //入力欄リセット
-	document.getElementById("POLNO").value = "";
-	document.getElementById("setti1").value = "";
-	document.getElementById("biko").value = "";
+function setValue20() {
+  document.getElementById("suryo").value =document.getElementById("suryo").value +++ 5;
+}
+function setValue30() {
+  document.getElementById("suryo").value =document.getElementById("suryo").value +++ 10;
+}
 
-  //再マーク
-   MAKall();
+
+//登録  
+function setValue() {
+  const g = id => document.getElementById(id), key = g("NO").value;
+  if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
+  const data = {
+    mykey: key, 
+    mv_1: g("GCD").value,
+    mv_2: +g("LAT").value, 
+    mv_3: +g("LNG").value,
+    mv_4: g("biko").value, 
+    mv_5: 1,
+    mv_6: g("rank").value,  
+    mv_7: +g("setub").value, 
+    mv_8: +g("suryo").value,
+    mv_9: 0,
+    mv_10: g("noww").value
+  };
+ //db登録
+  db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
+    console.log("保存成功:", key);
+ //入力欄リセット
+  ["NO","GCD", "kflg", "biko", "rank", "setub", "suryo"].forEach(id => g(id).value = "");
+//再マーク
+  MAKall(); 
   ck0();
-  
-   request.onsuccess = function (event) {
 
-   }
+  // 保存成功時の処理（必要なら追加）
+  request.onsuccess = function () {
+    console.log("データの保存に成功しました:", key);
+  };
+}
+
+
+//キャンセル
+function notValue() {
+   const g = id => document.getElementById(id), key = g("NO").value;
+  if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
+  const data = {
+    mykey: key, 
+    mv_1: g("GCD").value,
+    mv_2: +g("LAT").value, 
+    mv_3: +g("LNG").value,
+    mv_4: g("biko").value, 
+    mv_5: +g("kflg").value,
+    mv_6: g("rank").value,  
+    mv_7: +g("setub").value, 
+    mv_8: +g("suryo").value,
+    mv_9: 0,
+    mv_10: g("noww").value
+
+  };
+ //db登録
+  db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
+    console.log("保存成功:", key);
+ //入力欄リセット
+  ["NO","GCD", "kflg", "biko", "rank", "setub", "suryo"].forEach(id => g(id).value = "");
+//再マーク
+  MAKall(); 
+  ck0();
+
+  // 保存成功時の処理（必要なら追加）
+  request.onsuccess = function () {
+    console.log("データの保存に成功しました:", key);
+  };
 }
 // LDBからマーカ
-function MAKall(event) {
-return new Promise(function(resolve) {
-  //var result = document.getElementById("result");                   
+function MAKall() {
+  return new Promise(function(resolve) {
+    var transaction = db.transaction(["mystore"], "readwrite");
+    var store = transaction.objectStore("mystore");
+    var request = store.openCursor();
+
+    MI.clearLayers();
+    KAN.clearLayers();
+    ho.clearLayers();
+    moji.clearLayers();
+
+    request.onsuccess = function (event) {
+      if(event.target.result == null) {
+        resolve();
+        return;
+      }
+
+      var cursor = event.target.result;
+      var data = cursor.value;
+
+  var divIcon3 = L.divIcon({
+    html: String(data.mykey).slice(-4),
+  className: 'divicon2',
+  iconSize: [0,0],
+  iconAnchor: [-15,15]
+});
+
+//検索BOXに値が入っていてかつ一致したら書く
+
+    switch (data.mv_5) {
+      case 1:
+        addMarkerToLayer(KAN, data, '#fb1bceff', divIcon3);
+        break;
+      case 0:
+        addMarkerToLayer(MI, data, '#30242fff', divIcon3);
+        break;
+      case 3:
+        addMarkerToLayer(ho, data, '#047104ff', divIcon3);
+        break;
+      case 4:
+        addMarkerToLayer(ho, data, '#14a9ceff', divIcon3);
+        break;
+      default:
+        addMarkerToLayer(MI, data,'#30242fff', divIcon3);
+    }
+          cursor.continue();
+        };
+      });
+}
+
+// レイヤーにマーカーを追加する関数
+function addMarkerToLayer(layer, data, color, divIcon3) {
+//検索BOXに値が入っていてかつ一致したら書く
+var kno =document.getElementById("PullDownList").value 
+  if(kno > 0){
+    if(data.mv_1 == kno){
+          layer.addLayer(
+            L.circleMarker([data.mv_2, data.mv_3],
+              {color: '#fdfdfd', weight: 0,  fillColor: color, fillOpacity: 1, radius: 8, customID: data.mykey})
+              .on('click', function(e) { markerClick(e); })
+          );
+          moji.addLayer(
+            L.marker([data.mv_2, data.mv_3], {icon: divIcon3})
+          );
+	} else {}
+
+} else {
+          layer.addLayer(
+            L.circleMarker([data.mv_2, data.mv_3],
+              {color: '#fdfdfd', weight: 0,  fillColor: color, fillOpacity: 1, radius: 8, customID: data.mykey})
+              .on('click', function(e) { markerClick(e); })
+          );
+          moji.addLayer(
+            L.marker([data.mv_2, data.mv_3], {icon: divIcon3})
+          );
+  
+}
+}
+// LDBから線を引く
+function addline() {
+return new Promise(function(resolve) {              
   var transaction = db.transaction(["mystore"], "readwrite");
   var store = transaction.objectStore("mystore");
   var request = store.openCursor();
-
-  //マーカーレイヤー削除
-  MI.clearLayers();
-  KAN.clearLayers();
-  moji.clearLayers();
-
+  //lineレイヤー削除
+  line.clearLayers();
   request.onsuccess = function (event) {
     //リストがなかったら終了  
     if(event.target.result == null) {
@@ -147,38 +239,18 @@ return new Promise(function(resolve) {
     var cursor = event.target.result;
     var data = cursor.value;
 
-    var divIcon3 = L.divIcon({
-      html: data.mykey.slice( -6 ),
-      className: 'divicon2',
-      iconSize: [0,0],
-      iconAnchor: [-15,15]
-    });
-    //値が入ってたら完了（グレー）、未入力ピンク
-    if(data.myvalue>0){
-    //L.marker([data.myLAT, data.myLNG],{icon:myIcon2,customID: data.mykey}).addTo(KAN).on('click', function(e) { markerClick(e);});
-    KAN.addLayer(
-      L.marker([data.myLAT, data.myLNG],{icon:myIcon2,customID: data.mykey})
-      .on('click', function(e) { markerClick(e);})
-    );
-    moji.addLayer(
-      L.marker([data.myLAT, data.myLNG], {icon: divIcon3})
+    if(data.mv_1>0){
+   line.addLayer(
+       L.polyline([[data.mv_2, data.mv_3]], {color: 'red'})
     );
 
     } else {
 
-      MI.addLayer(
-        L.marker([data.myLAT, data.myLNG],{icon:myIcon1,customID: data.mykey})
-        .on('click', function(e) { markerClick(e);})
-      );
-      moji.addLayer(
-        L.marker([data.myLAT, data.myLNG], {icon: divIcon3})
-      );
     }
     cursor.continue();
   }
 })
 }
-
 
 
 //マーカーが全部入るイメージ
@@ -204,7 +276,7 @@ function GPS() {
 		GLNG.value = pos.coords.longitude;
 
 	}
-  function error(err) {
+  function error() {
 		alert('位置情報を取得できませんでした。');
 		GLAT.value = 0;
 		GLNG.value = 0;
@@ -258,12 +330,12 @@ function currentWatchReset() {
 
 //待つタイプ
 async function mikan(){
-await MAKall();
-await map.fitBounds(MI.getBounds());   
+  await MAKall();
+  await map.fitBounds(MI.getBounds());   
 };
 async function kanryo(){
-await MAKall();
-await map.fitBounds(KAN.getBounds());   
+    await MAKall();
+    await map.fitBounds(KAN.getBounds());   
 };
 	
 //現在時刻
@@ -280,11 +352,51 @@ function ima() {
 
 //グーグルマップを開く
 function gmap() {
-  if (document.getElementById("POLNO").value>0){} else {alert('マーカーを選択してから押すと、グーグルマップで現在地からの経路が表示されます。');return;}
+  if (document.getElementById("NO").value>0){} else {alert('マーカーを選択してから押すと、グーグルマップで現在地からの経路が表示されます。');return;}
   var glat = document.getElementById("LAT").value;
     var glng = document.getElementById("LNG").value;
   
   window.open("https://www.google.com/maps?q=" + glat + "," + glng);
   }
 
+//管理NOリストBOXに格納　重複あり
 
+function KANRINOa() {
+  return new Promise(function(resolve) {
+    var result = document.getElementById("result");                   
+    var transaction = db.transaction(["mystore"], "readwrite");
+    var store = transaction.objectStore("mystore");
+    var request = store.openCursor();
+    let array =[];
+  
+    request.onsuccess = function (event) {
+      if(event.target.result == null) {
+      resolve()
+	//重複削除
+	let res = new Set(array)  
+		res.forEach((element)=>{
+    
+    	// option要素を生成
+    	let option = document.createElement('option');
+    
+    	option.text = element;
+   	 option.value = element;
+    
+   	 // 生成したoption要素をselect要素に追加
+  	  document.getElementById("PullDownList").add(option);
+		document.getElementById("PullDownList").value = "";
+	});
+      return;
+    }
+      var cursor = event.target.result;
+      var data = cursor.value;
+	array.unshift( data.mv_1);
+	  cursor.continue();
+    }
+  })
+}
+//フィーダを選択
+function inputChange(){
+MAKall();
+
+}

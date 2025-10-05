@@ -5,15 +5,13 @@
 <title>CVtoMAP</title>
 <!--スマビュー-->
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
    crossorigin=""/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 <link rel="stylesheet" href="easy-button.css"/>
 <link rel="stylesheet" href="T.css"/>
 
- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
    crossorigin=""></script>
 
 <script type="text/javascript" src="t.js"></script>
@@ -21,36 +19,100 @@
 
 </head>
 <body>
+
 <div id="map"></div>
-<td><input type="hidden" id="LAT" name="LAT"></td>
-<td><input type="hidden" id="LNG" name="LNG"></td>
-<td><input type="hidden" id="GLAT" name="GLAT"></td>
-<td><input type="hidden" id="GLNG" name="GLNG"></td>
-<td><input type="hidden" id="setti1"  name="setti1" placeholder="接地抵抗"/></td>
-<td><input type="hidden" id="noww" name="now"></td>
 
+<div class="box2">
+<label>グループ　フィルタ</label>
+	<select id="PullDownList" onchange="inputChange()"></select>
+         <input type="button" value="解除" onclick="KAIJYO()"/> 
+</div>
+
+
+<td><input type="hidden" id="LAT"></td> 
+<td><input type="hidden" id="LNG"></td>
+<td><input type="hidden" id="GLAT"></td>
+<td><input type="hidden" id="GLNG"></td>
+
+
+<td><input type="hidden" id="noww"></td>
 <input type="checkbox" id="pop-up">
- <div class="overlay">
+
+<div class="overlay">
   <div class="window">
-  <label class="close" for="pop-up">×</label>  	
-   <p class="text">
+    <label class="close" for="pop-up">×</label>
 
-     <table> 
-       <tr>
-       <td> <label>主キー</label></td>
-        </tr>
-      <tr><td><input type="number"  id="POLNO" name="POLNO"  class="t1" placeholder="キー" disabled></td></tr>
-      <tr><td><input type="button" value="経路表示"  class="BT" onclick="gmap()"/></td></tr>
-
-      <tr><td><label>メモ</label></td></tr>
-      <tr><td><input  id="biko" name="biko"  cols="40" rows="4" placeholder="メモ" class="t1"></td></tr>
+    <table>
       
-      <td><label>作業完了（灰色）にします。</label></td>
-      <tr><td><input type="button" value="   完　了   " class="BTYES" onclick="setValue()"></td></tr>
-      <td><label>作業前（ピンク色）にします。</label></td>
-      <tr><td><input type="button" value=" キャンセル " class="BTNO" onclick="notValue()"></td></tr>
-</table>
-    </p>
+      <tr>
+
+       <td colspan="1" ><input type="button" id="routeBtn" value="経路表示" class="BT" onclick="gmap()"/></td>
+        <td colspan="4" ><input type="number" id="NO" disabled style="width: 190px; font-size:22px;"></td>
+
+      </tr>
+        <tr>
+        <th>グループ</th>
+        <td colspan="4" ><input type="number" id="GCD" disabled style="width: 190px; font-size:22px;"></td>
+      </tr>
+
+      <tr>
+        <th>ランク</th>
+        <td colspan="1" >
+          <select id="rank"  class="biko">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C0">C0</option>
+                <option value="C1">C1</option>
+                <option value="C2">C2</option>
+                <option value="C3">C3</option>
+          </select>
+        </td>
+
+      </tr>
+      <tr>
+        <th>設備</th>
+        <td colspan="4" >
+          <select id="setub"  class="biko">
+              <option value="1">通し・線間</option>
+              <option value="2">通し鉄バインド</option>
+              <option value="3">振分</option>
+              <option value="4">振分難燃</option>
+              <option value="5">変圧器付近</option>
+              <option value="6">開閉器アレスタ付近</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>数量</th>
+        <td colspan="1" >
+            <input type="number" id="suryo" value="1" min="1" max="100" step="1" class="biko">
+        </td>
+        <td colspan="1"><input type="button" value="0" class="BT" onclick="setValue10()"></td>
+        <td colspan="1"><input type="button" value="+5" class="BT" onclick="setValue20()"></td>
+        <td colspan="1"><input type="button" value="+10" class="BT" onclick="setValue30()"></td>
+      </tr>
+      <tr>
+        <th>メモ</th>
+        <td colspan="4"><input  id="biko"  cols="40" rows="4" placeholder="メモ" class="biko" ></td>
+      </tr>
+      <tr>
+        <th> </th><th> </th><th> </th>
+        <td colspan="2"><input type="button" value="完  了" class="BTNO"  onclick="setValue()"></td>
+      </tr>
+      <tr>
+        <th>ステータス</th>
+          <td colspan="2" >
+           <select id="kflg"  class="biko">
+             <option value="0">未登録</option>
+              <option value="1">登録完了</option>
+              <option value="3">保守未完</option>
+              <option value="4">保守完了</option>
+          </select>
+          <td colspan="2" ><input type="button" value="状態変更保存" class="BT"  onclick="notValue()"> </td>
+          </td>
+      </tr>
+    </table>
+
   </div>
  </div>
 <script>
@@ -70,13 +132,15 @@ var DKS = { color:'red', weight: 5 }
 var BKS = { color:'blue', weight: 5 }
 var MI = L.featureGroup();
 var KAN = L.featureGroup();
+var ho = L.featureGroup();
 var moji = L.featureGroup();
-var myIcon1 = L.divIcon({ className:'icon1'});
+//var line = L.featureGroup();
+
 var myIcon2 = L.divIcon({ className:'icon2'}); 
-var myIcon3 = L.divIcon({ className:'icon3'}); 
-var map = L.map('map', {center: [42.9577763,141.353986],zoom: 17,layers: [gsipale, MI, KAN, moji]});
+
+var map = L.map('map', {center: [42.9577763,141.353986],zoom: 17,layers: [gsipale, MI, KAN, moji,ho]});
 var baseLayers = {"地理院地図": gsi,"淡色地図": gsipale,"航空写真": gsip,"オープンストリートマップ": osm};
-var overlays = { "完了":KAN,"未完":MI,"番号":moji};
+var overlays = { "完了":KAN,"未完":MI,"番号":moji,"保守情報":ho};
 
 L.control.layers(baseLayers, overlays).addTo(map);
 
@@ -120,17 +184,35 @@ window.location.href = './index.html'; // 通常の遷移
 
 //起動時スクリプト
 window.addEventListener("load", function() {
+    KANRINOa();
 mikan();
 });
 
+//検索解除
+function KAIJYO() {
+ document.getElementById("PullDownList").value = "";
+MAKall();
+}
+
+
     //ズームイベント
     map.on('zoom', function(e) {
-      if (map.getZoom() >17){ //8越え(詳細)ならアイコン表示　小
+      if (map.getZoom() >16){ //8越え(詳細)ならアイコン表示小
         map.addLayer(moji);
+       // map.addLayer(MI);
       } else {                  //9以下(広域)ならメッセージ表示 大
         map.removeLayer(moji);
+        //map.removeLayer(MI);
       }
     });
+document.addEventListener('DOMContentLoaded', function() {
+
+  var polnoInput = document.getElementById('NO');
+  var routeBtn = document.getElementById('routeBtn');
+  if (polnoInput && routeBtn) {
+    routeBtn.value = (polnoInput.value ? polnoInput.value : "") + "経路表示";
+  }
+});
 </script>
 
 </body>
