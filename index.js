@@ -48,7 +48,6 @@ function getAll(_event) {
         
         //測定値が入っているものだけ表示
         if(data.mv_5 ===1) {
-          //result.innerHTML += cursor.key +  "," + data.myvalue + "," + data.myLAT + "," + data.myLNG  + "," + data.mytuti + "," + data.mybiko + "\n";
          bbb += cursor.key +  ","
           + data.mv_1 + "," 
           + data.mv_2 + "," 
@@ -133,6 +132,7 @@ function setValue(key, GCD, LAT, LNG, memo, FLG, rank, setu, su, yobi, noww) {
   LAT = parseFloat(LAT);
   LNG = parseFloat(LNG);
   FLG = parseInt(FLG, 10); // 数値に変換
+  GCD= parseInt(GCD,10); // 数値に変換
   // key, LAT, LNG の存在チェック
   if (isNaN(key) || key <= 0 || isNaN(LAT) || isNaN(LNG)) {
     console.warn("key, LAT, LNG のいずれかが無効です。登録を中止します。");
