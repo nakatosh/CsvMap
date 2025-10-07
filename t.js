@@ -160,11 +160,11 @@ function MAK(flg) {
 	ho.eachLayer((layer)=> {if (key === layer.options.customID) {ho.removeLayer(layer);}});
 
     switch (flg) {
-      case 1:createMarker(KAN, LAT, LNG, '#fb1bceff', key);break;
-      case 0: createMarker(moji, LAT, LNG, '#7a797aff', key);break;
-      case 3: createMarker(ho, LAT, LNG, '#047104ff', key);break;
-      case 4:createMarker(ho, LAT, LNG, '#14a9ceff', key);break;
-      default:createMarker(moji, LAT, LNG, '#7a797aff', key);break;
+      case 1:createMarker(KAN,LAT,LNG,'#fb1bceff',key);break;
+      case 0:createMarker(moji,LAT,LNG,'#7a797aff',key);break;
+      case 3:createMarker(ho,LAT, LNG,'#047104ff',key);break;
+      case 4:createMarker(ho,LAT, LNG,'#14a9ceff',key);break;
+      default:createMarker(moji,LAT, LNG,'#7a797aff',key);break;
     }          
 }
 
@@ -201,11 +201,11 @@ function MAKall() {
 
 //ステータスで色を変えたい
 switch (data.mv_5) {
-	case 1: addMarkerToLayer(KAN, data, '#fb1bceff', divIcon3);        break;
-	case 0: addMarkerToLayer(moji, data, '#7a797aff', divIcon3);        break;
-	case 3: addMarkerToLayer(ho, data, '#047104ff', divIcon3);        break;
-	case 4: addMarkerToLayer(ho, data, '#14a9ceff', divIcon3);        break;
-	default: addMarkerToLayer(moji, data,'#7a797aff', divIcon3);
+	case 1: addMarkerToLayer(KAN,data,'#fb1bceff',divIcon3);        break;
+	case 0: addMarkerToLayer(moji,data,'#7a797aff',divIcon3);        break;
+	case 3: addMarkerToLayer(ho,data,'#047104ff',divIcon3);        break;
+	case 4: addMarkerToLayer(ho,data,'#14a9ceff',divIcon3);        break;
+	default: addMarkerToLayer(moji,data,'#7a797aff',divIcon3);
 }   
 	cursor.continue();
 };
@@ -403,5 +403,6 @@ async function inputChange() {
     map.fitBounds(ho.getBounds());
   }
 }
+
 
 
