@@ -5,9 +5,8 @@
 <title>CVtoMAP</title>
 <!--スマビュー-->
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-   crossorigin=""/>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"  crossorigin=""/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"  crossorigin="anonymous">
 <link rel="stylesheet" href="easy-button.css"/>
 <link rel="stylesheet" href="T.css"/>
 
@@ -22,12 +21,16 @@
 
 <div id="map"></div>
 
+<!--画面下の画面-->
 <div class="box2">
-<label>グループ</label>
-	<select id="PullDownList" onchange="inputChange()"></select>
-         <input type="button" value="解除" onclick="KAIJYO()"/> 
+    <table>
+      <tr>
+	<td><label >検索　グループ</label></td>
+	<td><select id="PullDownList" onchange="inputChange()" class="biko"></select></td>
+	<td><input type="button" class="BT" value="検索解除" onclick="KAIJYO()"/> </td>
+      </tr>
+    </table>
 </div>
-
 
 <td><input type="hidden" id="LAT"></td> 
 <td><input type="hidden" id="LNG"></td>
@@ -45,14 +48,12 @@
     <table>
       
       <tr>
-
        <td colspan="1" ><input type="button" id="routeBtn" value="経路表示" class="BT" onclick="gmap()"/></td>
         <td colspan="4" ><input type="number" id="NO" disabled style="width: 190px; font-size:22px;"></td>
-
       </tr>
         <tr>
         <th>グループ</th>
-        <td colspan="4" ><input type="number" id="GCD" disabled style="width: 190px; font-size:22px;"></td>
+        <td colspan="4" > <input type="number" id="GCD" disabled style="width: 190px; font-size:22px;"></td>
       </tr>
 
       <tr>
@@ -77,11 +78,10 @@
               <option value="1">通し鉄バインド</option>
               <option value="2">通し・カバー箇所</option>
               <option value="3">振分・引留</option>
-              <option value="4">振分・引留（難燃カバ）</option>
-              <option value="5">引下線</option>
-			  <option value="6">引下線</option>
-			  <option value="7">変台棚先・ブッシング廻り</option>
-			  <option value="8">不要</option>
+              <option value="4">振分・引留（難燃クランプカバ）</option>
+	<option value="6">引下線</option>
+	<option value="7">変台棚先・ブッシング廻り</option>
+	<option value="8">不要</option>
           </select>
         </td>
       </tr>
@@ -111,7 +111,7 @@
               <option value="3">保守未完</option>
               <option value="4">保守完了</option>
           </select>
-          <td colspan="2" ><input type="button" value="状態変更保存" class="BT"  onclick="notValue()"> </td>
+          <td colspan="2" ><input type="button" value="ステータス保存" class="BT"  onclick="notValue()"> </td>
           </td>
       </tr>
     </table>
@@ -163,59 +163,67 @@ currentWatchReset();
 currentWatch();
 }).addTo(map);
 
+//未完のみ表示
 L.easyButton('<strong>未</strong>', function(btn, easyMap) {
-currentWatchReset();
-if (currentWatchBtn) {
-currentWatchBtn.state('current-watch');
-currentWatchBtn = null;
-}
-mikan(); 
-}).addTo(map);
+	currentWatchReset();
+	if (currentWatchBtn) {
+	currentWatchBtn.state('current-watch');
+	currentWatchBtn = null;
+	}
+	mikan(); 
+	}
+	).addTo(map);
 
+//完了のみ表示
 L.easyButton('<strong>完</strong>', function(btn, easyMap) {
-currentWatchReset();
-if (currentWatchBtn) {
-currentWatchBtn.state('current-watch');
-currentWatchBtn = null;
-}
-kanryo(); 
-}).addTo(map);
+	currentWatchReset();
+	if (currentWatchBtn) {
+	currentWatchBtn.state('current-watch');
+	currentWatchBtn = null;
+	}
+	kanryo(); 
+	}
+	).addTo(map);
 
+
+//メニューに戻る
 L.easyButton('fa fa-reply-all', function(btn, easyMap) {
 window.location.href = './index.html'; // 通常の遷移
 }).addTo(map);
 
 //起動時スクリプト
 window.addEventListener("load", function() {
-    KANRINOa();
+KANRINOa();
 mikan();
 });
 
 //検索解除
 function KAIJYO() {
- document.getElementById("PullDownList").value = "";
+document.getElementById("PullDownList").value = "";
 MAKall();
+
 }
 
+//地図移動
+map.on('moveend', function () {
+    if (map.getZoom() >17){ 
+        moji.clearLayers();
+        MAKall(); // 画面内のマーカーだけ再描画
+         } else {     
+        moji.clearLayers();
+        }
+});
 
-    //ズームイベント
-    map.on('zoom', function(e) {
-      if (map.getZoom() >16){ //8越え(詳細)ならアイコン表示小
-        map.addLayer(moji);
-       // map.addLayer(MI);
-      } else {                  //9以下(広域)ならメッセージ表示 大
-        map.removeLayer(moji);
-        //map.removeLayer(MI);
-      }
-    });
+
+//経路表示ボタン
 document.addEventListener('DOMContentLoaded', function() {
-
   var polnoInput = document.getElementById('NO');
   var routeBtn = document.getElementById('routeBtn');
   if (polnoInput && routeBtn) {
     routeBtn.value = (polnoInput.value ? polnoInput.value : "") + "経路表示";
   }
 });
+
 </script>
 
 </body>
