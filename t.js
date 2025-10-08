@@ -225,7 +225,7 @@ function addMarkerToLayer(layer, data, color, divIcon3) {
 	  if (!kno || kno === data.mv_1) {
   	  	layer.addLayer(
    	  		L.circleMarker([lat, lng], {
-			color: '#fdfdfd', weight: 0, fillColor: color,  fillOpacity: 1,  radius: 10, customID: data.mykey	}).on('click', function (e) {markerClick(e);
+			color: '#7a797aff', weight: 2, fillColor: color,  fillOpacity: 1,  radius: 10, customID: data.mykey	}).on('click', function (e) {markerClick(e);
     	 		}
 		)
 	);
@@ -403,6 +403,7 @@ async function inputChange() {
     map.fitBounds(ho.getBounds());
   }
 }
+
 
 
 
