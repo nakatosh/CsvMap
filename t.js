@@ -394,7 +394,7 @@ function ima() {
   noww.value =  year + "/" + month + "/" + date + " " + hour + ":" + minute + ":" + second;
 }
 
-//ぐるーぷCD  BOXに格納　重複あり
+//ぐるーぷCD  BOXに格納重複あり
 function KANRINOa() {
   return new Promise(function(resolve) {
     var result = document.getElementById("result");                   

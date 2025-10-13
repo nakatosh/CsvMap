@@ -183,9 +183,10 @@ window.location.href = './index.html'; // 通常の遷移
 }).addTo(map);
 
 //起動時スクリプト
-window.addEventListener("load", function() {
-KANRINOa();
-mikan();
+window.addEventListener("load", async function() {
+  await KANRINOa();  // 完了を待つ
+  KAIJYO();          // プルダウン初期化（ここで空にならない）
+  mikan();           // 他の処理
 });
 
 //検索解除
