@@ -118,13 +118,13 @@ html, body {
 
 .window {
 	width: 90vw;
-	height: 90vw;
+	 height: 90vh; /* 高さは画面の高さに合わせる */
 	max-width: 450px;
-    max-height: 560px;
+    max-height: 480px;
 	background-color: #9d9c9c;
 	border-radius: 10px;
 	position: fixed;
-	top: 10%;
+	top: 5%;
 	left: 5%;
 	font-size: 14px;
 }
@@ -150,5 +150,6 @@ html, body {
 	right: 0;
 	bottom: 0; /*下寄せの指定*/
 }
+
 
 
