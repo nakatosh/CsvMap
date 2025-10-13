@@ -197,13 +197,16 @@ MAKall();
 
 //地図移動
 map.on('moveend', function () {
-    moji.clearLayers();
-    map.removeLayer(MI); // 未完レイヤーを非表示
+  moji.clearLayers();
+  map.removeLayer(MI); // 一旦非表示
 
-    if (map.getZoom() > 17) {
-        MAK_text(); // 番号マーカー再描画
-        map.addLayer(MI); // ズームが大きいときだけ未完レイヤーを表示
-    }
+  const zoom = map.getZoom();
+  if (zoom > 16) {
+    MAK_text(); // 番号マーカー再描画（ズーム17以上）
+  }
+  if (zoom > 14) {
+    map.addLayer(MI); // 未完レイヤーはズーム14以上で表示
+  }
 });
 
 
@@ -215,4 +218,5 @@ document.addEventListener('DOMContentLoaded', function() {
     routeBtn.value = (polnoInput.value ? polnoInput.value : "") + "経路表示";
   }
 });
+
 </script></body></html>
