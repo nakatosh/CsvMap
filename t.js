@@ -186,7 +186,7 @@ function MAKall() {
 
     KAN.clearLayers();
     ho.clearLayers();
-    moji.clearLayers();
+    MI.clearLayers();
 
     request.onsuccess = function (event) {
       if(event.target.result == null) {
@@ -201,11 +201,11 @@ function MAKall() {
 
 //ステータスで色を変えたい
 switch (data.mv_5) {
-	case 1: addMarkerToLayer(KAN,data,'#fb1bceff',divIcon3);        break;
-	case 0: addMarkerToLayer(moji,data,'#fdfdfd',divIcon3);        break;
-	case 3: addMarkerToLayer(ho,data,'#047104ff',divIcon3);        break;
-	case 4: addMarkerToLayer(ho,data,'#14a9ceff',divIcon3);        break;
-	default: addMarkerToLayer(moji,data,'#fdfdfd',divIcon3);
+	case 1: addMarkerToLayer(KAN,data,'#fb1bceff',divIcon3);break;
+	case 0: addMarkerToLayer(MI,data,'#fdfdfd',divIcon3);break;
+	case 3: addMarkerToLayer(ho,data,'#047104ff',divIcon3);break;
+	case 4: addMarkerToLayer(ho,data,'#14a9ceff',divIcon3);break;
+	default: addMarkerToLayer(MI,data,'#fdfdfd',divIcon3);
 }   
 	cursor.continue();
 };
@@ -214,10 +214,8 @@ switch (data.mv_5) {
 
 //ステータスで色を変えたい
 function addMarkerToLayer(layer, data, color, divIcon3) {
-
   const lat = parseFloat(data.mv_2);
   const lng = parseFloat(data.mv_3);
-
   const kno =  +document.getElementById("PullDownList").value;
   const bounds = map.getBounds(); // 現在の地図範囲
 
@@ -230,9 +228,47 @@ function addMarkerToLayer(layer, data, color, divIcon3) {
 		)
 	);
 	}
-	// mojiレイヤーはズームが17以上かつ画面内のみ追加
-	if (map.getZoom() > 17 && bounds.contains([lat, lng])) {moji.addLayer(L.marker([lat, lng], { icon: divIcon3 }));
-	}
+
+}
+
+// LDBからマーカーーーーーーーーーーーーーーーーーーーーーーーー
+function MAK_text() {
+  return new Promise(function(resolve) {
+    const transaction = db.transaction(["mystore"], "readwrite");
+    const store = transaction.objectStore("mystore");
+    const request = store.openCursor();
+
+    moji.clearLayers();
+
+    request.onsuccess = function(event) {
+      const cursor = event.target.result;
+      if (!cursor) {
+        resolve();
+        return;
+      }
+
+      const data = cursor.value;
+      const lat = parseFloat(data.mv_2);
+      const lng = parseFloat(data.mv_3);
+      const kno = +document.getElementById("PullDownList").value;
+      const bounds = map.getBounds();
+
+      if (map.getZoom() > 17 && bounds.contains([lat, lng])) {
+        if (!kno || kno === data.mv_1) {
+          const divIcon3 = L.divIcon({
+            html: String(data.mykey).slice(-4),
+            className: 'divicon2',
+            iconSize: [0, 0],
+            iconAnchor: [-15, 15]
+          });
+
+          moji.addLayer(L.marker([lat, lng], { icon: divIcon3 }));
+        }
+      }
+
+      cursor.continue();
+    };
+  });
 }
 
 
@@ -336,7 +372,6 @@ function currentWatchReset() {
 	}
 }
 
-
 //待つタイプ
 async function mikan(){
   await MAKall();
@@ -358,8 +393,6 @@ function ima() {
   const second = D.getSeconds();
   noww.value =  year + "/" + month + "/" + date + " " + hour + ":" + minute + ":" + second;
 }
-
-
 
 //ぐるーぷCD  BOXに格納　重複あり
 function KANRINOa() {
@@ -403,8 +436,3 @@ async function inputChange() {
     map.fitBounds(ho.getBounds());
   }
 }
-
-
-
-
-

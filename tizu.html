@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"/>
-<title>CVtoMAP</title>
+<title>CsvMap</title>
 <!--スマビュー-->
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"  crossorigin=""/>
@@ -18,9 +18,7 @@
 
 </head>
 <body>
-
 <div id="map"></div>
-
 <!--画面下の画面-->
 <div class="box2">
     <table>
@@ -36,8 +34,6 @@
 <td><input type="hidden" id="LNG"></td>
 <td><input type="hidden" id="GLAT"></td>
 <td><input type="hidden" id="GLNG"></td>
-
-
 <td><input type="hidden" id="noww"></td>
 <input type="checkbox" id="pop-up">
 
@@ -47,57 +43,52 @@
 
     <table>
       
-      <tr>
-       <td colspan="1" ><input type="button" id="routeBtn" value="経路表示" class="BT" onclick="gmap()"/></td>
-        <td colspan="4" ><input type="number" id="NO" disabled style="width: 190px; font-size:22px;"></td>
-      </tr>
-        <tr>
-        <th>グループ</th>
-        <td colspan="4" > <input type="number" id="GCD" disabled style="width: 190px; font-size:22px;"></td>
-      </tr>
+      <tr><td colspan="1" ><input type="button" id="routeBtn" value="経路表示" class="BT" onclick="gmap()"/></td>
+      <td colspan="4" ><input type="number" id="NO" disabled style="width: 190px; font-size:22px;"></td></tr>
 
-      <tr>
-        <th>ランク</th>
-        <td colspan="2" >
-          <select id="rank"  class="biko">
+      <tr><th>グループ</th>
+      <td colspan="4"> <input type="number" id="GCD" disabled style="width: 190px; font-size:22px;"></td></tr>
+
+      <tr><th>ランク</th><td colspan="2"><select id="rank"  class="biko">
                 <option value="A">A</option>
                 <option value="B">B</option>
                 <option value="C0">C0</option>
                 <option value="C1">C1</option>
                 <option value="C2">C2</option>
                 <option value="C3">C3</option>
-          </select>
-        </td>
+      </select></td></tr>
 
-      </tr>
-      <tr>
-        <th>設備</th>
-        <td colspan="4" >
-          <select id="setub"  class="biko">
+      <tr><th>設備</th><td colspan="4"><select id="setub"  class="biko">
               <option value="0">通し・電柱間</option>
               <option value="1">通し鉄バインド</option>
               <option value="2">通し・カバー箇所</option>
               <option value="3">振分・引留</option>
               <option value="4">振分・引留（難燃クランプカバ）</option>
-	<option value="6">引下線</option>
-	<option value="7">変台棚先・ブッシング廻り</option>
-	<option value="8">不要</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <th>数量</th>
-        <td colspan="1" >
-            <input type="number" id="suryo" value="1" min="1" max="100" step="1" class="biko">
+              <option value="6">引下線</option>
+              <option value="7">変台棚先・ブッシング廻り</option>
+              <option value="8">不要</option>
+      </select></td></tr>
+
+      <tr><th>工事内容</th><td colspan="4"><select id="kjnaiyo"  class="biko">
+              <option value="0">新設</option>
+              <option value="1">撤去</option>
+              <option value="2">交換</option>
+              <option value="3">保守</option>
+              <option value="4">その他</option>
+      </select></td></tr>
+
+      <tr><th>数量</th><td colspan="1" >
+        <input type="number" id="suryo" value="1" min="1" max="100" step="1" class="biko">
         </td>
         <td colspan="1"><input type="button" value="0" class="BT" onclick="suu0()"></td>
         <td colspan="1"><input type="button" value="+5" class="BT" onclick="suuPlus(5)"></td>
         <td colspan="1"><input type="button" value="+10" class="BT" onclick="suuPlus(10)"></td>
       </tr>
-      <tr>
-        <th>メモ</th>
-        <td colspan="4"><input  id="biko"  cols="40" rows="4" placeholder="メモ" class="biko" ></td>
+
+      <tr><th>メモ</th>
+      <td colspan="4"><input  id="biko"  cols="40" rows="4" placeholder="メモ" class="biko" ></td>
       </tr>
+      
       <tr>
         <th> </th><th> </th><th> </th>
         <td colspan="2"><input type="button" value="完  了" class="BTNO"  onclick="setValue()"></td>
@@ -201,17 +192,17 @@ mikan();
 function KAIJYO() {
 document.getElementById("PullDownList").value = "";
 MAKall();
-
 }
 
 //地図移動
 map.on('moveend', function () {
-    if (map.getZoom() >17){ 
-        moji.clearLayers();
-        MAKall(); // 画面内のマーカーだけ再描画
-         } else {     
-        moji.clearLayers();
-        }
+    moji.clearLayers();
+    map.removeLayer(MI); // 未完レイヤーを非表示
+
+    if (map.getZoom() > 17) {
+        MAK_text(); // 番号マーカー再描画
+        map.addLayer(MI); // ズームが大きいときだけ未完レイヤーを表示
+    }
 });
 
 
@@ -223,11 +214,4 @@ document.addEventListener('DOMContentLoaded', function() {
     routeBtn.value = (polnoInput.value ? polnoInput.value : "") + "経路表示";
   }
 });
-
-</script>
-
-</body>
-</html>
-
-
-
+</script></body></html>
