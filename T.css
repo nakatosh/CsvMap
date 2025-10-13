@@ -118,9 +118,9 @@ html, body {
 
 .window {
 	width: 90vw;
-	height: 90vh;
-	    max-width: 450px;
-    max-height: 450px;
+	height: 90vw;
+	max-width: 450px;
+    	max-height: 480px;
 	background-color: #9d9c9c;
 	border-radius: 10px;
 	position: fixed;
@@ -150,3 +150,4 @@ html, body {
 	right: 0;
 	bottom: 0; /*下寄せの指定*/
 }
+
