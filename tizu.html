@@ -226,7 +226,44 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+//ぐるーぷCD  BOXに格納重複あり
+function KANRINOa() {
+  return new Promise(function(resolve) {
+    if (!db) {
+      console.error("DB is not initialized");
+      resolve();
+      return;
+    }
+
+    var result = document.getElementById("result");                   
+    var transaction = db.transaction(["mystore"], "readwrite");
+    var store = transaction.objectStore("mystore");
+    var request = store.openCursor();
+    let array = [];
+
+    request.onsuccess = function (event) {
+      if (event.target.result == null) {
+        resolve();
+        let res = new Set(array);
+        res.forEach((element) => {
+          let option = document.createElement('option');
+          option.text = element;
+          option.value = element;
+          document.getElementById("PullDownList").add(option);
+        });
+        document.getElementById("PullDownList").value = "";
+        return;
+      }
+      var cursor = event.target.result;
+      var data = cursor.value;
+      array.unshift(data.mv_1);
+      cursor.continue();
+    };
+  });
+}
+	
 </script></body></html>
+
 
 
 
