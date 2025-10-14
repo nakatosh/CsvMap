@@ -394,41 +394,6 @@ function ima() {
   noww.value =  year + "/" + month + "/" + date + " " + hour + ":" + minute + ":" + second;
 }
 
-//ぐるーぷCD  BOXに格納重複あり
-function KANRINOa() {
-  return new Promise(function(resolve) {
-    var result = document.getElementById("result");                   
-    var transaction = db.transaction(["mystore"], "readwrite");
-    var store = transaction.objectStore("mystore");
-    var request = store.openCursor();
-    let array =[];
-  
-    request.onsuccess = function (event) {
-      if(event.target.result == null) {
-      resolve()
-	//重複削除
-	let res = new Set(array)  
-		res.forEach((element)=>{
-    
-    	// option要素を生成
-    	let option = document.createElement('option');
-    
-    	option.text = element;
-   	 option.value = element;
-    
-   	 // 生成したoption要素をselect要素に追加
-  	  document.getElementById("PullDownList").add(option);
-		document.getElementById("PullDownList").value = "";
-	});
-      return;
-    }
-      var cursor = event.target.result;
-      var data = cursor.value;
-	array.unshift( data.mv_1);
-	  cursor.continue();
-    }
-  })
-}
 //フィーダを選択
 async function inputChange() {
   await MAKall();
@@ -436,3 +401,4 @@ async function inputChange() {
     map.fitBounds(ho.getBounds());
   }
 }
+
