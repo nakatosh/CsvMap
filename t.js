@@ -33,7 +33,7 @@ function markerClick(e){
 
 }
 
-// 接地抵抗が入力済みなら取得する
+
  function getValue() {
   var key =  Number(document.getElementById("NO").value);   
   var transaction = db.transaction(["mystore"], "readwrite");
@@ -151,21 +151,23 @@ function resetInputs() {
 
 // LDBからマーカーーーーーーーーーーーーーーーーーーーーーーーー
 function MAK(flg) {
-  var key = document.getElementById("NO").value;
-  var LAT = Number(document.getElementById("LAT").value);
-  var LNG = Number(document.getElementById("LNG").value);
+var key = document.getElementById("NO").value;
+var LAT = Number(document.getElementById("LAT").value);
+var LNG = Number(document.getElementById("LNG").value);
+// 既存マーカーの削除
+KAN.eachLayer((layer)=> {if (key === layer.options.customID) {KAN.removeLayer(layer);}});
+moji.eachLayer((layer)=> {if (key === layer.options.customID) {moji.removeLayer(layer);}});
+ho.eachLayer((layer)=> {if (key === layer.options.customID) {ho.removeLayer(layer);}});
+MI.eachLayer((layer)=> {if (key === layer.options.customID) {MI.removeLayer(layer);}});
+//新しいマーカーの追加
+switch (flg) {
+case 1:createMarker(KAN,LAT,LNG,'#fb1bceff',key);break;
+case 0:createMarker(MI,LAT,LNG,'#fdfdfd',key);break;
+case 3:createMarker(ho,LAT, LNG,'#047104ff',key);break;
+case 4:createMarker(ho,LAT, LNG,'#14a9ceff',key);break;
+default:createMarker(MI,LAT, LNG,'#fdfdfd',key);break;
+}          
 
-	KAN.eachLayer((layer)=> {if (key === layer.options.customID) {KAN.removeLayer(layer);}});
-	moji.eachLayer((layer)=> {if (key === layer.options.customID) {moji.removeLayer(layer);}});
-	ho.eachLayer((layer)=> {if (key === layer.options.customID) {ho.removeLayer(layer);}});
-
-    switch (flg) {
-      case 1:createMarker(KAN,LAT,LNG,'#fb1bceff',key);break;
-      case 0:createMarker(moji,LAT,LNG,'#fdfdfd',key);break;
-      case 3:createMarker(ho,LAT, LNG,'#047104ff',key);break;
-      case 4:createMarker(ho,LAT, LNG,'#14a9ceff',key);break;
-      default:createMarker(moji,LAT, LNG,'#fdfdfd',key);break;
-    }          
 }
 
 // サークルマーカーを書くーーーーーーーーーーーーーーーーーーーーーーーー
@@ -212,16 +214,14 @@ switch (data.mv_5) {
 });
 }
 
-//ステータスで色を変えたい
+//ステータスで色を変えたいーーーーーーーーーーーーーーーーーーーーーーーー
 function addMarkerToLayer(layer, data, color, divIcon3) {
-  const lat = parseFloat(data.mv_2);
-  const lng = parseFloat(data.mv_3);
-  const kno =  +document.getElementById("PullDownList").value;
-  const bounds = map.getBounds(); // 現在の地図範囲
-
-  	// 通常のマーカーは kno が null または一致する場合のみ追加
-	  if (!kno || kno === data.mv_1) {
-  	  	layer.addLayer(
+const lat = parseFloat(data.mv_2);
+const lng = parseFloat(data.mv_3);
+const kno =  +document.getElementById("PullDownList").value;
+const bounds = map.getBounds(); // 現在の地図範囲
+// 通常のマーカーは kno が null または一致する場合のみ追加
+if (!kno || kno === data.mv_1) {layer.addLayer(
    	  		L.circleMarker([lat, lng], {
 			color: '#7a797aff', weight: 2, fillColor: color,  fillOpacity: 1,  radius: 10, customID: data.mykey	}).on('click', function (e) {markerClick(e);
     	 		}
@@ -231,30 +231,51 @@ function addMarkerToLayer(layer, data, color, divIcon3) {
 
 }
 
-// LDBからマーカーーーーーーーーーーーーーーーーーーーーーーーー
+// LDBからマーカの文字だけーーーーー
 function MAK_text() {
   return new Promise(function(resolve) {
+    // IndexedDB から "mystore" ストアを読み込み
     const transaction = db.transaction(["mystore"], "readwrite");
     const store = transaction.objectStore("mystore");
     const request = store.openCursor();
 
-    moji.clearLayers();
+    // 既存マーカーの customID を記録するためのセットを作成
+    const existingIDs = new Set();
 
+    // moji レイヤーにすでに追加されているマーカーの customID を収集
+    // この処理はマーカーを消さずに、重複を防ぐために必要
+    moji.eachLayer(layer => {
+      if (layer.options && layer.options.customID) {
+        existingIDs.add(layer.options.customID);
+      }
+    });
+
+    // 地図の現在の表示範囲とズームレベルを取得
+    const bounds = map.getBounds();
+    const kno = +document.getElementById("PullDownList").value;
+
+    // IndexedDB のカーソル処理開始
     request.onsuccess = function(event) {
       const cursor = event.target.result;
+
+      // データがもうない場合は Promise を解決して終了
       if (!cursor) {
         resolve();
         return;
       }
 
       const data = cursor.value;
-      const lat = parseFloat(data.mv_2);
-      const lng = parseFloat(data.mv_3);
-      const kno = +document.getElementById("PullDownList").value;
-      const bounds = map.getBounds();
+      const lat = parseFloat(data.mv_2); // 緯度
+      const lng = parseFloat(data.mv_3); // 経度
 
+      // ズームが17より大きく、地図範囲内にある場合のみ処理
       if (map.getZoom() > 17 && bounds.contains([lat, lng])) {
-        if (!kno || kno === data.mv_1) {
+
+        // PullDownList の選択値と一致するか、未選択なら表示対象
+        // かつ、すでに表示されていない customID の場合のみ追加
+        if ((!kno || kno === data.mv_1) && !existingIDs.has(data.mykey)) {
+
+          // 表示するテキストアイコンを作成（mykey の末尾4文字を表示）
           const divIcon3 = L.divIcon({
             html: String(data.mykey).slice(-4),
             className: 'divicon2',
@@ -262,10 +283,18 @@ function MAK_text() {
             iconAnchor: [-15, 15]
           });
 
-          moji.addLayer(L.marker([lat, lng], { icon: divIcon3 }));
+          // マーカーを作成し、customID を設定
+          const marker = L.marker([lat, lng], {
+            icon: divIcon3,
+            customID: data.mykey
+          });
+
+          // moji レイヤーにマーカーを追加（既存と重複しない）
+          moji.addLayer(marker);
         }
       }
 
+      // 次のデータへ進む
       cursor.continue();
     };
   });
