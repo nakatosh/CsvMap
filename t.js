@@ -209,10 +209,10 @@ function createMarker(layer, lat, lng, color, key, setub) {
   layer.addLayer(
     L.circleMarker([lat, lng], {
       color:isStrong ? '#f06d0fff' : '#7a797aff',
-      weight: isStrong ? 4 : 2,                      // 枠線を太く
+      weight: isStrong ? 6 : 4,                      // 枠線を太く
       fillColor: color,       // 強調色（赤）に変更
       fillOpacity: 1,
-      radius: isStrong ? 14 : 10,                    // サイズを大きく
+      radius: isStrong ? 14 : 12,                    // サイズを大きく
       customID: key
 
 
@@ -274,10 +274,10 @@ function addMarkerToLayer(layer, data, color, divIcon3) {
     layer.addLayer(
       L.circleMarker([lat, lng], {
         color: isStrong ?'#f06d0fff':'#7a797aff',
-        weight: isStrong ? 4 : 2,                      // 枠線を太く
+        weight: isStrong ? 6 : 4,                      // 枠線を太く
         fillColor: color,       // 強調色（赤）に変更
         fillOpacity: 1,
-        radius: isStrong ? 14 : 10,                    // サイズを大きく
+        radius: isStrong ? 14 : 12,                    // サイズを大きく
         customID: data.mykey
       }).on('click', function (e) {
         markerClick(e);
@@ -343,7 +343,10 @@ function MAK_text() {
           const marker = L.marker([lat, lng], {
             icon: divIcon3,
             customID: data.mykey
+          }).on('click', function(e) {
+          markerClick(e); // ← 通常マーカーと同様に反応させる
           });
+
 
           // moji レイヤーにマーカーを追加（既存と重複しない）
           moji.addLayer(marker);
