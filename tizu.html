@@ -140,43 +140,47 @@ L.control.scale({
         maxWidth: 300,
 }).addTo(map);
 
+
+ // ズームボタン
+map.zoomControl.remove(); // 既存のズームコントロールを削除
+L.control.zoom({
+  position: 'topright' // ズームボタンも右上に
+}).addTo(map);
+
+
 // 現在地表示ボタン
 var watch_id = 0;
 var curMarker = null;	// 現在地マーカー
 var currentWatchBtn = null;
 
 L.easyButton('fa fa-user', function(btn, easyMap) {
-currentWatchReset();
-currentWatch();
-}).addTo(map);
+  currentWatchReset();
+  currentWatch();
+}, { position: 'topright' }).addTo(map);
 
-//未完のみ表示
+
 L.easyButton('<strong>未</strong>', function(btn, easyMap) {
-	currentWatchReset();
-	if (currentWatchBtn) {
-	currentWatchBtn.state('current-watch');
-	currentWatchBtn = null;
-	}
-	mikan(); 
-	}
-	).addTo(map);
+  currentWatchReset();
+  if (currentWatchBtn) {
+    currentWatchBtn.state('current-watch');
+    currentWatchBtn = null;
+  }
+  mikan();
+}, { position: 'topright' }).addTo(map);
 
-//完了のみ表示
 L.easyButton('<strong>完</strong>', function(btn, easyMap) {
-	currentWatchReset();
-	if (currentWatchBtn) {
-	currentWatchBtn.state('current-watch');
-	currentWatchBtn = null;
-	}
-	kanryo(); 
-	}
-	).addTo(map);
+  currentWatchReset();
+  if (currentWatchBtn) {
+    currentWatchBtn.state('current-watch');
+    currentWatchBtn = null;
+  }
+  kanryo();
+}, { position: 'topright' }).addTo(map);
 
-
-//メニューに戻る
 L.easyButton('fa fa-reply-all', function(btn, easyMap) {
-window.location.href = './index.html'; // 通常の遷移
-}).addTo(map);
+  window.location.href = './index.html';
+}, { position: 'topright' }).addTo(map);
+
 
 //起動時スクリプト
 	window.addEventListener("load", async function() {
