@@ -1,3 +1,5 @@
+
+
 /* >csvファイル選択 */
 .file-btn {
     display: inline-block;
@@ -43,6 +45,7 @@ input:focus, select:focus, textarea:focus {
 html {
     padding: 1; 
     margin: 1;
+    background-color:blank;
 } 
 
 h1 {
@@ -53,5 +56,9 @@ color: #b05c01;
 
 body{
   font-family:'メイリオ', 'Meiryo', sans-serif;
+   margin: 0;
+  width: 100vw;
+  height: 100vh;
+
 }
 

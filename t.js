@@ -34,36 +34,47 @@ function markerClick(e){
 }
 
 
- function getValue() {
-  var key =  Number(document.getElementById("NO").value);   
-  var transaction = db.transaction(["mystore"], "readwrite");
-  var store = transaction.objectStore("mystore");                  
-  var request = store.get(key);
+function getValue() {
+  const key = Number(document.getElementById("NO").value);
+  const transaction = db.transaction(["mystore"], "readwrite");
+  const store = transaction.objectStore("mystore");
+  const request = store.get(key);
 
-request.onsuccess = function (event) {
-  var result = event.target.result;
-  if (result) {
-    document.getElementById("GCD").value   = result.mv_1 || "";
-    document.getElementById("biko").value  = result.mv_4 || "";
-    document.getElementById("kflg").value  = result.mv_5 || "";
-    document.getElementById("rank").value  = result.mv_6 || "";
-    document.getElementById("setub").value = result.mv_7 || "";
-    document.getElementById("suryo").value = result.mv_8 || "";
-    document.getElementById("noww").value  = result.mv_10 || "";
-  } else {
-    console.log("データが見つかりませんでした");
-  }
-};
+  request.onsuccess = function (event) {
+    const result = event.target.result;
+    if (result) {
+      const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value || "";
+        else console.warn(`要素 ${id} が見つかりません`);
+      };
+
+      setValue("GCD", result.mv_1);
+      setValue("biko", result.mv_4);
+      setValue("kflg", result.mv_5);
+      setValue("rank", result.mv_6);
+      setValue("setub", result.mv_7);
+      setValue("suryo", result.mv_8);
+      setValue("kou",  result.mv_9);
+      setValue("noww", result.mv_10);
+    } else {
+      console.log("データが見つかりませんでした");
+    }
+  };
 }
+
 
 //入力画面ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 //数量ボタンーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 function suu0() {
   document.getElementById("suryo").value = 0;
 }
+
 function suuPlus(value) {
   document.getElementById("suryo").value =document.getElementById("suryo").value +++ value;
 }
+
+
 //グーグルマップを開くーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 function gmap() {
   if (document.getElementById("NO").value>0){} else {alert('マーカーを選択してから押すと、グーグルマップで現在地からの経路が表示されます。');return;}
@@ -75,7 +86,7 @@ function gmap() {
 
 
 //登録  ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-function setValue() {
+function touroku1() {
   const g = id => document.getElementById(id), 
   key = +g("NO").value;
   if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
@@ -87,60 +98,74 @@ function setValue() {
     mv_4: g("biko").value, 
     mv_5: 1,
     mv_6: g("rank").value,  
-    mv_7: +g("setub").value, 
+    mv_7: g("setub").value, 
     mv_8: +g("suryo").value,
-    mv_9: 0,
-    mv_10: g("noww").value
+    mv_9: g("kou").value,
+    mv_10: new Date().toLocaleString('ja-JP')
+
   };
  
-  db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
+
+  // db登録
+  const request = db.transaction(["mystore"], "readwrite")
+                    .objectStore("mystore")
+                    .put(data);
+
+  request.onsuccess = () => {
     console.log("保存成功:", key);
+    MAK(data.mv_5);     // マーカー色更新
+    resetInputs();      // 入力欄リセット
+    ck0();              // 再マーク
+  };
 
-	MAK(1);		
-	resetInputs(); 	 // 入力欄リセット（外部関数呼び出し）
- 	ck0();	//再マーク
-
-  // 保存成功時の処理（必要なら追加）
-  request.onsuccess = function () {
-    console.log("データの保存に成功しました:", key);
+  request.onerror = (e) => {
+    console.error("保存失敗:", e);
+    alert("保存に失敗しました");
   };
 }
 
 //キャンセルーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-function notValue() {
-   const g = id => document.getElementById(id), key = +g("NO").value;
+
+function touroku0() {
+  const g = id => document.getElementById(id), key = +g("NO").value;
   if (key <= 0) return alert('マーカーをクリックしてから登録してください!!');
+
   const data = {
-    mykey: key, 
+    mykey: key,
     mv_1: +g("GCD").value,
-    mv_2: +g("LAT").value, 
+    mv_2: +g("LAT").value,
     mv_3: +g("LNG").value,
-    mv_4: g("biko").value, 
-    mv_5: +g("kflg").value,
-    mv_6: g("rank").value,  
-    mv_7: +g("setub").value, 
+    mv_4: g("biko").value,
+    mv_5: 0,
+    mv_6: g("rank").value,
+    mv_7: g("setub").value,
     mv_8: +g("suryo").value,
-    mv_9: 0,
-    mv_10: g("noww").value
+    mv_9: g("kou").value,
+    mv_10: new Date().toLocaleString('ja-JP')
 
   };
- //db登録
-  db.transaction(["mystore"], "readwrite").objectStore("mystore").put(data).onsuccess = () =>
+
+  // db登録
+  const request = db.transaction(["mystore"], "readwrite")
+                    .objectStore("mystore")
+                    .put(data);
+
+  request.onsuccess = () => {
     console.log("保存成功:", key);
+    MAK(data.mv_5);     // マーカー色更新
+    resetInputs();      // 入力欄リセット
+    ck0();              // 再マーク
+  };
 
-  MAK(data.mv_5); //マーカ一の色一個更新
-  resetInputs();  // 入力欄リセット（外部関数呼び出し）
-  ck0();//再マーク
-
-  // 保存成功時の処理（必要なら追加）
-  request.onsuccess = function () {
-    console.log("データの保存に成功しました:", key);
+  request.onerror = (e) => {
+    console.error("保存失敗:", e);
+    alert("保存に失敗しました");
   };
 }
 
 // 入力欄をリセットする関数ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 function resetInputs() {
-  const ids = ["NO", "GCD", "kflg", "biko", "rank", "setub", "suryo", "LAT", "LNG", "noww"];
+  const ids = ["NO", "GCD", "kflg", "biko", "rank", "setub", "kou", "suryo", "LAT", "LNG", "noww"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = "";
@@ -151,33 +176,54 @@ function resetInputs() {
 
 // LDBからマーカーーーーーーーーーーーーーーーーーーーーーーーー
 function MAK(flg) {
-var key = document.getElementById("NO").value;
-var LAT = Number(document.getElementById("LAT").value);
-var LNG = Number(document.getElementById("LNG").value);
-// 既存マーカーの削除
-KAN.eachLayer((layer)=> {if (key === layer.options.customID) {KAN.removeLayer(layer);}});
-moji.eachLayer((layer)=> {if (key === layer.options.customID) {moji.removeLayer(layer);}});
-ho.eachLayer((layer)=> {if (key === layer.options.customID) {ho.removeLayer(layer);}});
-MI.eachLayer((layer)=> {if (key === layer.options.customID) {MI.removeLayer(layer);}});
-//新しいマーカーの追加
-switch (flg) {
-case 1:createMarker(KAN,LAT,LNG,'#fb1bceff',key);break;
-case 0:createMarker(MI,LAT,LNG,'#fdfdfd',key);break;
-case 3:createMarker(ho,LAT, LNG,'#047104ff',key);break;
-case 4:createMarker(ho,LAT, LNG,'#14a9ceff',key);break;
-default:createMarker(MI,LAT, LNG,'#fdfdfd',key);break;
-}          
+  const key = Number(document.getElementById("NO").value);
+  const LAT = Number(document.getElementById("LAT").value);
+  const LNG = Number(document.getElementById("LNG").value);
+  const setub = Number(document.getElementById("setub").value); // ← 追加
 
+  const removeMarkerByKey = (group) => {
+    group.eachLayer(layer => {
+      if (layer.options.customID === key) {
+        group.removeLayer(layer);
+      }
+    });
+  };
+
+  [KAN, moji, ho, MI].forEach(removeMarkerByKey);
+
+  switch (flg) {
+    case 1: createMarker(KAN, LAT, LNG, '#fb1bceff', key, setub); break;
+    case 0: createMarker(MI, LAT, LNG, '#fdfdfd', key, setub); break;
+    case 3: createMarker(ho, LAT, LNG, '#047104ff', key, setub); break;
+    case 4: createMarker(ho, LAT, LNG, '#14a9ceff', key, setub); break;
+    default: createMarker(MI, LAT, LNG, '#fdfdfd', key, setub); break;
+  }
 }
+
+
 
 // サークルマーカーを書くーーーーーーーーーーーーーーーーーーーーーーーー
-function createMarker(layer, lat, lng, color, key) {
+function createMarker(layer, lat, lng, color, key, setub) {
+  const isStrong = [1, 3, 6, 7].includes(setub); // 強調対象か判定
+
   layer.addLayer(
     L.circleMarker([lat, lng], {
-      color:'#7a797aff', weight: 2, fillColor: color, fillOpacity: 1, radius: 10, customID: key
-    }).on('click', function(e) { markerClick(e); })
+      color:isStrong ? '#f06d0fff' : '#7a797aff',
+      weight: isStrong ? 4 : 2,                      // 枠線を太く
+      fillColor: color,       // 強調色（赤）に変更
+      fillOpacity: 1,
+      radius: isStrong ? 14 : 10,                    // サイズを大きく
+      customID: key
+
+
+
+      
+    }).on('click', function(e) {
+      markerClick(e);
+    })
   );
 }
+
 
 // LDBからマーカーーーーーーーーーーーーーーーーーーーーーーーー
 function MAKall() {
@@ -216,20 +262,30 @@ switch (data.mv_5) {
 
 //ステータスで色を変えたいーーーーーーーーーーーーーーーーーーーーーーーー
 function addMarkerToLayer(layer, data, color, divIcon3) {
-const lat = parseFloat(data.mv_2);
-const lng = parseFloat(data.mv_3);
-const kno =  +document.getElementById("PullDownList").value;
-const bounds = map.getBounds(); // 現在の地図範囲
-// 通常のマーカーは kno が null または一致する場合のみ追加
-if (!kno || kno === data.mv_1) {layer.addLayer(
-   	  		L.circleMarker([lat, lng], {
-			color: '#7a797aff', weight: 2, fillColor: color,  fillOpacity: 1,  radius: 10, customID: data.mykey	}).on('click', function (e) {markerClick(e);
-    	 		}
-		)
-	);
-	}
+  const lat = parseFloat(data.mv_2);
+  const lng = parseFloat(data.mv_3);
+  const kno = +document.getElementById("PullDownList").value;
+  const bounds = map.getBounds();
 
+  // 強調対象かどうか判定（setub が 1, 3, 6, 7）
+  const isStrong = [1, 3, 6, 7].includes(Number(data.mv_7));
+
+  if (!kno || kno === data.mv_1) {
+    layer.addLayer(
+      L.circleMarker([lat, lng], {
+        color: isStrong ?'#f06d0fff':'#7a797aff',
+        weight: isStrong ? 4 : 2,                      // 枠線を太く
+        fillColor: color,       // 強調色（赤）に変更
+        fillOpacity: 1,
+        radius: isStrong ? 14 : 10,                    // サイズを大きく
+        customID: data.mykey
+      }).on('click', function (e) {
+        markerClick(e);
+      })
+    );
+  }
 }
+
 
 // LDBからマーカの文字だけーーーーー
 function MAK_text() {

@@ -67,13 +67,21 @@ function getAll(_event) {
 
 //数える
 function getCount() {
-var dbq = db.transaction(["mystore"], "readwrite");
-var st = dbq.objectStore("mystore");
-var rq = st.count();
-	rq.onsuccess = function (e) {
-	result.innerHTML =  e.target.result ;
-	}
-}	
+  var result = document.getElementById("result");
+  var dbq = db.transaction(["mystore"], "readonly");
+  var st = dbq.objectStore("mystore");
+  var rq = st.count();
+
+  rq.onsuccess = function (e) {
+    result.innerHTML = `データ数：${e.target.result} 件`;
+  };
+
+  rq.onerror = function (e) {
+    console.error("件数取得に失敗", e);
+    result.innerHTML = "取得失敗";
+  };
+}
+
 		
     //全データ削除 
     function deleteAll() {
@@ -100,7 +108,7 @@ function downloadCSV(bbb) {
     //ダウンロードするCSVファイル名を指定する
     var filename = "csvmap.csv";
     //CSVデータ  //0:NO 1:緯度 2:経度 3:メモ 4:FLG 5:rank 6:setubi 7:kazu 8:日時
-    var data =  "NO,グループCD,緯度,経度,メモ,完了FLG,項目1,項目2,数量,予備,日時" + "\n" + bbb
+    var data =  "NO,グループCD,緯度,経度,メモ,完了FLG,項目1,項目2,数量,高所作業可能,日時" + "\n" + bbb
     //BOMを付与する（Excelでの文字化け対策）
     var bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     //Blobでデータを作成する

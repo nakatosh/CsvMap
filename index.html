@@ -16,18 +16,20 @@ if('serviceWorker' in navigator){
 }
 </script>
 </head>
-	<h1>CsvMap</h1>
 <body>
+	<h1>CsvMap</h1>
+
 	CSV入力<br>
 	<label for="file" class="file-btn">csvファイルを選択してください。
 		<input type="file" id="file" name="file" /></label>
 	<br>
 	直接入力<br>
-<textarea  id="ttt" class="txt"  cols="40" rows="8" placeholder="キー番号,緯度,経度,を入力してください。"></textarea ><br>
+<textarea  id="ttt" class="txt"  cols="40" rows="8" placeholder="キー番号,グループCD,緯度,経度,メモ,を入力してください。"></textarea ><br>
 	<br>
 	<label class="BT" onclick="txtinp()">入力データ取込</label>
 	<br><br>
 	<label  class="BT" onclick="getCount()">データ数確認</label>
+
 	<br><br>
 	<label class="BT" onclick="location.href='./tizu.html'" >マップ表示</label>
 	<br><br>
